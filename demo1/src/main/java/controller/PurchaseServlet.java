@@ -1,6 +1,5 @@
 package controller;
 
-import com.alibaba.fastjson.JSON;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,29 +10,31 @@ import service.ProductService;
 import service.impl.ProductServiceImpl;
 import utils.JsonUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-@WebServlet("/product/insert")
-public class InsertServlet extends HttpServlet {
+@WebServlet("/product/purchase")
+public class PurchaseServlet extends HttpServlet {
     ProductService productService = new ProductServiceImpl();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        int number = Integer.parseInt(req.getParameter("number"));
+        Product product = productService.select(name);
+        int quantity = product.getQuantity();
+        System.out.println(quantity);
+        System.out.println(number);
+        quantity = quantity - number;
+        System.out.println(quantity);
+        productService.updata(quantity,product.getId());
+        String json2 = JsonUtil.toJsonMap(0, "success", null);
+        resp.getWriter().write(json2);
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader reader = req.getReader();
-        String line;
-        while((line=reader.readLine())!=null){
-            sb.append(line);
-        }
-        String params = sb.toString();
-        Product product = JSON.parseObject(params,Product.class);
-        productService.add(product);
-        String json2 = JsonUtil.toJsonMap(0, "success", null);
-        resp.getWriter().write(json2);
+
     }
 }

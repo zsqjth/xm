@@ -4,5 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace是对应的接口路径-->
 <mapper namespace="dao.ProductMapper">
+    <update id="update">
+        update product
+        set
+            quantity = #{quantity}
+        where id = #{id};
+    </update>
+    <delete id="deleteByid">
+        delete from product where id = #{id};
+    </delete>
 
+    <insert id="add" >
+        insert  into product ( productname, price,quantity)
+
+        values (#{productname},#{price},#{quantity});
+    </insert>
 </mapper>

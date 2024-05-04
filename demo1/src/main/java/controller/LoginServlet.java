@@ -45,9 +45,9 @@ public class LoginServlet extends HttpServlet {
         if(user != null){
             HttpSession session = req.getSession();
             session.setAttribute("user",user);
+            String json2 = JsonUtil.toJsonMap(0, "success", null);
+            resp.getWriter().write(json2);
 
-
-            resp.getWriter().write("success");
 
 
         }else {

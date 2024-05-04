@@ -46,20 +46,10 @@ public class RegisterServlet extends HttpServlet {
         User p = JSON.parseObject(params,User.class);
         String username = p.getUsername();
         String password = p.getPassword();
-        try {
-            userService.add(username, password);
-            String json2 = JsonUtil.toJsonMap(0, "success", null);
-            resp.getWriter().write(json2);
-        } catch (NumberFormatException e) {
-            // 非数字值异常处理
-            e.printStackTrace();
-            String jsonError = JsonUtil.toJsonMap(1, "Invalid input data format", null);
-            resp.getWriter().write(jsonError);
-        } catch (Exception e) {
-            // 其他异常处理
-            e.printStackTrace();
-            String jsonError = JsonUtil.toJsonMap(2, "Internal server error", null);
-            resp.getWriter().write(jsonError);
-        }
+        userService.add(username, password);
+
+        String json2 = JsonUtil.toJsonMap(0, "success", null);
+        resp.getWriter().write(json2);
+
     }
 }

@@ -1,39 +1,29 @@
 package controller;
 
-import com.alibaba.fastjson.JSON;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import pojo.Product;
 import service.ProductService;
 import service.impl.ProductServiceImpl;
 import utils.JsonUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+@WebServlet("/product/delete")
 
-@WebServlet("/product/insert")
-public class InsertServlet extends HttpServlet {
+public class DeleteServlet extends HttpServlet {
     ProductService productService = new ProductServiceImpl();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        int id = Integer.parseInt(req.getParameter("id"));
+        productService.delete(id);
+        String json2 = JsonUtil.toJsonMap(0, "success", null);
+        resp.getWriter().write(json2);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader reader = req.getReader();
-        String line;
-        while((line=reader.readLine())!=null){
-            sb.append(line);
-        }
-        String params = sb.toString();
-        Product product = JSON.parseObject(params,Product.class);
-        productService.add(product);
-        String json2 = JsonUtil.toJsonMap(0, "success", null);
-        resp.getWriter().write(json2);
+
     }
 }

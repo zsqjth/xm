@@ -6,7 +6,11 @@ import java.util.List;
 
 public interface ProductService {
     List<Product> selectAll();
-    void add(String productname,Double price,Integer quantity);
+    void add(Product product);
 
     Product select(String productname);
+
+    void delete(int id);
+
+    void updata(int quantity,int id);
 }

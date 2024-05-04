@@ -25,12 +25,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void add(String productname, Double price, Integer quantity) {
+    public void add(Product product) {
         //2 获取SqlSession对象
         SqlSession sqlSession = factory.openSession();
         //3 获取MAPPER代理
         ProductMapper mapper = sqlSession.getMapper(ProductMapper.class);
-        mapper.add(productname, price, quantity);
+        mapper.add(product);
         sqlSession.commit();
         sqlSession.close();
     }
@@ -44,6 +44,28 @@ public class ProductServiceImpl implements ProductService {
         Product select = mapper.select(productname);
         sqlSession.close();
         return select;
+    }
+
+    @Override
+    public void delete(int id) {
+        //2 获取SqlSession对象
+        SqlSession sqlSession = factory.openSession();
+        //3 获取MAPPER代理
+        ProductMapper mapper = sqlSession.getMapper(ProductMapper.class);
+        mapper.deleteByid(id);
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Override
+    public void updata(int quantity,int id) {
+        //2 获取SqlSession对象
+        SqlSession sqlSession = factory.openSession();
+        //3 获取MAPPER代理
+        ProductMapper mapper = sqlSession.getMapper(ProductMapper.class);
+        mapper.update(quantity,id);
+        sqlSession.commit();
+        sqlSession.close();
     }
 
 
