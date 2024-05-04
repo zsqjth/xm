@@ -1,6 +1,7 @@
 package controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -12,6 +13,7 @@ import utils.JsonUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 @WebServlet("/user/login")
 public class LoginServlet extends HttpServlet {
@@ -19,27 +21,32 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        StringBuilder stringBuilder = new StringBuilder();
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+
+        StringBuilder sb = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
-        while((line=reader.readLine())!=null)
-        {
-            stringBuilder.append(line);
+        while((line=reader.readLine())!=null){
+            sb.append(line);
         }
-        String params = stringBuilder.toString();
-        User user = JSON.parseObject(params,User.class);
-        String username = user.getUsername();
-        String password = user.getPassword();
-        User user2 = userService.select(username,password);
-        if(user2 != null){
+
+        String params = sb.toString();
+        User p = JSON.parseObject(params,User.class);
+        String username = p.getUsername();
+        String password = p.getPassword();
+        User user = userService.select(username,password);
+
+
+        if(user != null){
             HttpSession session = req.getSession();
-            session.setAttribute("user",user2);
-            Cookie c_username = new Cookie("username",username);
-            Cookie c_password = new Cookie("password",password);
-            c_username.setMaxAge(60*60*24*7);
-            c_password.setMaxAge(60*60*7*24);
-            resp.addCookie(c_username);
-            resp.addCookie(c_password);
+            session.setAttribute("user",user);
+
+
             resp.getWriter().write("success");
 
 
@@ -50,10 +57,5 @@ public class LoginServlet extends HttpServlet {
             resp.getWriter().write("false");
         }
 
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doGet(req, resp);
     }
 }

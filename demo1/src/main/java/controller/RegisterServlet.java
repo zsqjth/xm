@@ -23,13 +23,29 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 不再处理 GET 请求
+        resp.getWriter().write("GET method not supported, use POST instead.");
+    }
 
-        Map<String, String[]> parameterMap = req.getParameterMap();
-        String username = parameterMap.get("username")[0];
-        String password = parameterMap.get("password")[0];
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println(username);
-        System.out.println(password);
+
+
+        resp.setContentType("text/json;charset=utf-8");
+        //调试
+        resp.setHeader("Access-Control-Allow-Origin", "*");//为什么必须有这个
+
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String line;
+        while((line=reader.readLine())!=null){
+            sb.append(line);
+        }
+        String params = sb.toString();
+        User p = JSON.parseObject(params,User.class);
+        String username = p.getUsername();
+        String password = p.getPassword();
         try {
             userService.add(username, password);
             String json2 = JsonUtil.toJsonMap(0, "success", null);
@@ -45,10 +61,5 @@ public class RegisterServlet extends HttpServlet {
             String jsonError = JsonUtil.toJsonMap(2, "Internal server error", null);
             resp.getWriter().write(jsonError);
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doGet(req, resp);
     }
 }
